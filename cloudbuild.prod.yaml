@@ -11,22 +11,22 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     args: ["exec", "-t", "app", "composer", "install"]
 
-  - id: "Rodando key generate"
-    name: "gcr.io/cloud-builders/docker"
-    args: ["exec", "-t", "app", "php", "/var/www/artisan", "key:generate"]
+  # - id: "Rodando key generate"
+  #   name: "gcr.io/cloud-builders/docker"
+  #   args: ["exec", "-t", "app", "php", "/var/www/artisan", "key:generate"]
 
-  - id: "Rodando phpunit"
-    name: "gcr.io/cloud-builders/docker"
-    args:
-      [
-        "exec",
-        "-t",
-        "app",
-        "php",
-        "/var/www/vendor/bin/phpunit",
-        "-c",
-        "/var/www/phpunit.xml",
-      ]
+  # - id: "Rodando phpunit"
+  #   name: "gcr.io/cloud-builders/docker"
+  #   args:
+  #     [
+  #       "exec",
+  #       "-t",
+  #       "app",
+  #       "php",
+  #       "/var/www/vendor/bin/phpunit",
+  #       "-c",
+  #       "/var/www/phpunit.xml",
+  #     ]
 
   - id: "Building image from Dockerfile.prod"
     name: "gcr.io/cloud-builders/docker"
@@ -52,3 +52,11 @@ steps:
       - |
         sed 's#img-app-deployment#gcr.io/$PROJECT_ID/app-laravel:$SHORT-SHA#g' .k8s/app/deployment.yaml > k8s/app/deployment-new.yaml;
         cat k8s/app/deployment-new.yaml;
+
+  - id: "Deploying k8s"
+    name: "gcr.io/cloud-builders/kubectl"
+    args:
+      - "apply"
+      - "-f"
+      - "k8s/app/deployment-new.yaml"
+    env:
