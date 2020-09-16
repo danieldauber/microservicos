@@ -42,7 +42,7 @@ steps:
 
   - id: "Pushing Image"
     name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$PROJECT_ID/app-laravel:$SHORT-SHA"]
+    args: ["push", "gcr.io/$PROJECT_ID/app-laravel:$SHORT_SHA"]
 
   - id: "Adjusting deployment file - k8s"
     name: "gcr.io/cloud-builders/gcloud"
@@ -50,7 +50,7 @@ steps:
     args:
       - "-c"
       - |
-        sed 's#img-app-deployment#gcr.io/$PROJECT_ID/app-laravel:$SHORT-SHA#g' .k8s/app/deployment.yaml > k8s/app/deployment-new.yaml;
+        sed 's#img-app-deployment#gcr.io/$PROJECT_ID/app-laravel:$SHORT_SHA#g' .k8s/app/deployment.yaml > k8s/app/deployment-new.yaml;
         cat k8s/app/deployment-new.yaml;
 
   - id: "Deploying k8s"
@@ -60,3 +60,5 @@ steps:
       - "-f"
       - "k8s/app/deployment-new.yaml"
     env:
+      - "CLOUDSDK_COMPUTE_ZONE=us-central1-c"
+      - "CLOUDSDK_CONTAINER_CLUSTER=codelaravel"
