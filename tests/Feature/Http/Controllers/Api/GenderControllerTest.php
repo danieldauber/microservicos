@@ -141,4 +141,21 @@ class GenderControllerTest extends TestCase
                 'name' => 'test'
             ]);
     }
+
+
+    public function testDelete()
+    {
+
+        $gender = factory(gender::class)->create();
+
+
+        $response = $this->json(
+            'DELETE',
+            route('genders.destroy', ['gender' => $gender->id]),
+            []
+        );
+
+        $response
+            ->assertStatus(204);
+    }
 }

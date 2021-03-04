@@ -6,12 +6,13 @@ use App\Models\Category;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\Traits\TestValidation;
 use Tests\TestCase;
 
 class CategoryControllerTest extends TestCase
 {
 
-    use DatabaseMigrations;
+    use DatabaseMigrations, TestValidation;
 
     /**
      * A basic feature test example.
@@ -46,50 +47,15 @@ class CategoryControllerTest extends TestCase
     {
         $response = $this->json('POST', route('categories.store'), []);
 
-        $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['name'])
-            ->assertJsonMissingValidationErrors(['is_active'])
-            ->assertJsonFragment([
-                \Lang::get('validation.required', ['attribute' => 'name'])
-            ]);
+        $this->assetInvalidationFields($response, ['name'], 'required', []);
 
         $response = $this->json('POST', route('categories.store'), [
             'name' => str_repeat('a', 256),
             'is_active' => 'a'
         ]);
 
-
-        $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['name', 'is_active'])
-            ->assertJsonFragment([
-                \Lang::get('validation.max.string', ['attribute' => 'name', 'max' => 255])
-            ])
-            ->assertJsonFragment([
-                \Lang::get('validation.boolean', ['attribute' => 'is active'])
-            ]);
-
-        $category = factory(Category::class)->create();
-
-        $response = $this->json(
-            'PUT',
-            route('categories.update', ['category' => $category->id]),
-            [
-                'name' => str_repeat('a', 256),
-                'is_active' => 'a'
-            ]
-        );
-
-        $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['name', 'is_active'])
-            ->assertJsonFragment([
-                \Lang::get('validation.max.string', ['attribute' => 'name', 'max' => 255])
-            ])
-            ->assertJsonFragment([
-                \Lang::get('validation.boolean', ['attribute' => 'is active'])
-            ]);
+        $this->assetInvalidationFields($response, ['name'], 'max.string', ['max' => 255]);
+        $this->assetInvalidationFields($response, ['is_active'], 'boolean', []);
     }
 
     public function testStore()
@@ -146,5 +112,21 @@ class CategoryControllerTest extends TestCase
                 'is_active' => true,
                 'name' => 'test'
             ]);
+    }
+
+    public function testDelete()
+    {
+
+        $category = factory(Category::class)->create();
+
+
+        $response = $this->json(
+            'DELETE',
+            route('categories.destroy', ['category' => $category->id]),
+            []
+        );
+
+        $response
+            ->assertStatus(204);
     }
 }
