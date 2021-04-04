@@ -23,7 +23,9 @@ RUN echo "memory_limit = -1" >> /usr/local/etc/php/conf.d/99-ajustes.ini
 #   php artisan key:generate && \
 #   php artisan migrate
 
-RUN usermod -u 1001 www-data
+RUN usermod -u 1000 www-data
+
+# RUN chown www-data:www-data -R *
 
 USER www-data
 

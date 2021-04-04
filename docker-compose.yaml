@@ -46,7 +46,6 @@ services:
       - ./.docker/mysql:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=root
       - NGINX_HOST=app
       - NGINX_PORT=9000
     networks:
