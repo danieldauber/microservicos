@@ -6,10 +6,10 @@ namespace Tests\Traits;
 
 use Illuminate\Testing\TestResponse;
 
-trait TestValidation
+trait TestValidations
 {
 
-    protected function assetInvalidationFields(
+    protected function assertInvalidationFields(
         TestResponse $response,
         array $fields,
         string $rule,
@@ -21,8 +21,8 @@ trait TestValidation
             ->assertJsonValidationErrors($fields);
 
         foreach ($fields as $field) {
-            $fieldName = str_replace("_", " ", $field);
 
+            $fieldName = str_replace('_', ' ', $field);
             $response->assertJsonFragment([
                 \Lang::get("validation.{$rule}", ['attribute' => $fieldName] + $ruleParams)
             ]);
