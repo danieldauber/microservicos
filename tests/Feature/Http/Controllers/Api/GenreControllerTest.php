@@ -12,7 +12,7 @@ class GenreControllerTest extends TestCase
 {
 
     use DatabaseMigrations, TestValidations, TestSaves;
-    protected $category;
+    protected $genre;
 
     protected function setUp(): void
     {
