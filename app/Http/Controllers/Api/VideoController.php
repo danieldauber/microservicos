@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VideoController extends BasicCrudController
 {
@@ -28,10 +29,12 @@ class VideoController extends BasicCrudController
     {
         $validate = $this->validate($request, $this->rulesStore());
 
-        /** @var Video $obj */
-        $obj = $this->model()::create($validate);
-        $obj->categories()->sync($request->get('categories_id'));
-        $obj->genres()->sync($request->get('genres_id'));
+        $self = $this;
+        $obj = DB::transaction(function () use ($validate, $request, $self) {
+            $obj = $this->model()::create($validate);
+            $self->handleRelations($obj, $request);
+            return $obj;
+        });
 
         $obj->refresh();
         return $obj;
@@ -42,13 +45,22 @@ class VideoController extends BasicCrudController
         $obj = $this->findOrFail($id);
         $validate = $this->validate($request, $this->rulesUpdate());
         $obj->update($validate);
-
-        $obj->categories()->sync($request->get('categories_id'));
-        $obj->genres()->sync($request->get('genres_id'));
+        $self = $this;
+        $obj = DB::transaction(function () use ($validate, $request, $self, $obj) {
+            $obj = $this->model()::create($validate);
+            $self->handleRelations($obj, $request);
+            return $obj;
+        });
 
         $obj->refresh();
 
         return $obj;
+    }
+
+    protected function handleRelations($video, Request $request)
+    {
+        $video->categories()->sync($request->get('categories_id'));
+        $video->genres()->sync($request->get('genres_id'));
     }
 
     protected function model()

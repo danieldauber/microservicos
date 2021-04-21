@@ -37,7 +37,7 @@ trait TestSaves
 
         $response = $this->json('PUT', $this->routeUpdate(), $sendData);
 
-        if ($response->status() !== 200) {
+        if (!in_array($response->status(), [200, 201])) {
             throw new Exception("Response must be 200, given {$response->status()} : \n {$response->content()}");
         }
 
