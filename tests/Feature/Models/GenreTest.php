@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Models;
 
-use App\Models\Gender;
+use App\Models\Genre;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,41 +19,41 @@ class GenreTest extends TestCase
      */
     public function testList()
     {
-        factory(Gender::class, 1)->create();
+        factory(Genre::class, 1)->create();
 
-        $gender = Gender::all();
-        $genderKeys = array_keys($gender->first()->getAttributes());
-        $this->assertCount(1, $gender);
+        $Genre = Genre::all();
+        $GenreKeys = array_keys($Genre->first()->getAttributes());
+        $this->assertCount(1, $Genre);
         $this->assertEqualsCanonicalizing([
             'id', 'name', 'is_active',
             'created_at', 'updated_at', 'deleted_at'
-        ], $genderKeys);
+        ], $GenreKeys);
     }
 
     public function testCreate()
     {
 
-        $gender = Gender::create([
+        $Genre = Genre::create([
             'name' => 'teste',
 
         ]);
-        $gender->refresh();
+        $Genre->refresh();
 
-        $this->assertTrue((preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i',  $gender->id) == 1));
+        $this->assertTrue((preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i',  $Genre->id) == 1));
 
 
-        $this->assertEquals('teste', $gender->name);
-        $this->assertTrue($gender->is_active);
+        $this->assertEquals('teste', $Genre->name);
+        $this->assertTrue($Genre->is_active);
     }
 
     public function testEdit()
     {
-        /** @var Gender $gender */
-        $gender = factory(Gender::class)->create([
+        /** @var Genre $Genre */
+        $Genre = factory(Genre::class)->create([
             'is_active' => false
         ])->first();
 
-        $gender->update([
+        $Genre->update([
             'name' => 'teste_name',
             'is_active' => true
         ]);
@@ -64,23 +64,23 @@ class GenreTest extends TestCase
         ];
 
         foreach ($data as $key => $value) {
-            $this->assertEquals($value, $gender->{$key});
+            $this->assertEquals($value, $Genre->{$key});
         }
     }
 
     public function testDelete()
     {
-        /** @var Gender $gender */
-        $gender = Gender::create([
+        /** @var Genre $Genre */
+        $Genre = Genre::create([
             'name' => 'teste',
 
         ]);
-        $gender->refresh();
+        $Genre->refresh();
 
-        $gender->delete();
+        $Genre->delete();
 
-        $gender = Gender::all();
+        $Genre = Genre::all();
 
-        $this->assertCount(0, $gender);
+        $this->assertCount(0, $Genre);
     }
 }

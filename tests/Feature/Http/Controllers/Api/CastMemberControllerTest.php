@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
-use App\Models\Category;
+use App\Models\CastMember;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\Traits\TestValidations;
 use Tests\TestCase;
 use Tests\Traits\TestSaves;
 
-class CategoryControllerTest extends TestCase
+class CastMemberControllerTest extends TestCase
 {
 
     use DatabaseMigrations, TestValidations, TestSaves;
@@ -17,7 +17,7 @@ class CategoryControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->category = factory(Category::class)->create();
+        $this->castMember = factory(CastMember::class)->create();
     }
 
     /**
@@ -27,20 +27,20 @@ class CategoryControllerTest extends TestCase
      */
     public function testIndex()
     {
-        $response = $this->get(route('categories.index'));
+        $response = $this->get(route('cast_members.index'));
 
         $response
             ->assertStatus(200)
-            ->assertJson([$this->category->toArray()]);
+            ->assertJson([$this->castMember->toArray()]);
     }
 
     public function testShow()
     {
-        $response = $this->get(route('categories.show', ['category' => $this->category->id]));
+        $response = $this->get(route('cast_members.show', ['cast_member' => $this->castMember->id]));
 
         $response
             ->assertStatus(200)
-            ->assertJson($this->category->toArray());
+            ->assertJson($this->castMember->toArray());
     }
 
     public function testeInvalidationData()
@@ -56,90 +56,64 @@ class CategoryControllerTest extends TestCase
         ];
         $this->assertInvalidationInStore($data, 'max.string', ['max' => 255]);
         $this->assertInvalidationInUpdate($data, 'max.string', ['max' => 255]);
-
-        $data = [
-            'is_active' => 'a'
-        ];
-
-        $this->assertInvalidationInStore($data, 'boolean');
-        $this->assertInvalidationInUpdate($data, 'boolean');
     }
 
     public function testStore()
     {
         $data = [
-            'name' => 'test'
+            'name' => 'test',
+            'type' => 1
         ];
 
-        $response = $this->assertStore($data, $data + ['description' => null, 'is_active' => true, 'deleted_at' => null]);
+        $response = $this->assertStore($data, $data + ['deleted_at' => null]);
         $response->assertJsonStructure([
             'created_at', 'updated_at'
         ]);
-
-        $data = [
-            'name' => 'test',
-            'description' => 'description',
-            'is_active' => false
-        ];
-        $this->assertStore($data, $data + ['description' => 'description', 'is_active' => false]);
     }
 
     public function testUpdate()
     {
 
-        $this->category = factory(Category::class)->create([
-            'description' => 'description',
-            'is_active' => false
+        $this->castMember = factory(CastMember::class)->create([
+            'type' => 2
         ]);
 
         $data = [
             'name' => 'test',
-            'is_active' => true,
-            'description' => 'teste'
+            'type' => 2
         ];
 
         $response = $this->assertUpdate($data, $data + ['deleted_at' => null]);
         $response->assertJsonStructure([
             'created_at', 'updated_at'
         ]);
-
-
-        $data = [
-            'name' => 'test',
-            'description' => ''
-        ];
-
-        $this->assertUpdate($data, array_merge($data, ['description' => null]));
-
-        $data['description'] = 'test';
-        $this->assertUpdate($data, array_merge($data, ['description' => 'test']));
     }
 
     public function testDelete()
     {
         $response = $this->json(
             'DELETE',
-            route('categories.destroy', ['category' => $this->category->id]),
+            route('cast_members.destroy', ['cast_member' => $this->castMember->id]),
             []
         );
         $response->assertStatus(204);
 
-        $this->assertNull(Category::find($this->category->id));
-        $this->assertNotNull(Category::withTrashed()->find($this->category->id));
+        $this->assertNull(CastMember::find($this->castMember->id));
+        $this->assertNotNull(CastMember::withTrashed()->find($this->castMember->id));
     }
 
     protected function routeStore()
     {
-        return route('categories.store');
+        return route('cast_members.store');
     }
 
     protected function routeUpdate()
     {
-        return route('categories.update', ['category' => $this->category->id]);
+        return route('cast_members.update', ['cast_member' => $this->castMember->id]);
     }
 
     protected function model()
     {
-        return Category::class;
+        return CastMember::class;
     }
 }

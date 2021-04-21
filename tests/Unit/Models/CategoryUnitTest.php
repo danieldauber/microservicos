@@ -16,7 +16,7 @@ class CategoryTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
+    public function testModel()
     {
         $fillable = ['name', 'description', 'is_active'];
         $category = new Category();

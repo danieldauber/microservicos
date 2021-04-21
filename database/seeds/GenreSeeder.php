@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class CategorySeeder extends Seeder
+class GenreSeeder extends Seeder
 {
     /**
      * Run the database seeds.

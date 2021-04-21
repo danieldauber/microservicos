@@ -21,6 +21,8 @@ use ReflectionClass;
 class BasicCrudControllerTest extends TestCase
 {
 
+    private $controller;
+
     protected function setUp(): void
     {
         parent::setUp();

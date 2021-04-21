@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Gender;
+use App\Models\Genre;
 
-class GenderController extends BasicCrudController
+class GenreController extends BasicCrudController
 {
 
     private $rules = [
@@ -14,7 +14,7 @@ class GenderController extends BasicCrudController
 
     protected function model()
     {
-        return Gender::class;
+        return Genre::class;
     }
 
     protected function rulesStore()
