@@ -13,7 +13,7 @@ class Video extends Model
     const RATING_LIST = ['L', '10', '14', '16', '18'];
 
     protected $fillable = [
-        'tittle',
+        'title',
         'description',
         'year_launched',
         'opened',

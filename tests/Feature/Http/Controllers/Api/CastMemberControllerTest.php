@@ -60,15 +60,23 @@ class CastMemberControllerTest extends TestCase
 
     public function testStore()
     {
-        $data = [
-            'name' => 'test',
-            'type' => 1
+        $datas = [
+            [
+                'name' => 'test',
+                'type' => CastMember::TYPE_ACTOR
+            ],
+            [
+                'name' => 'test',
+                'type' => CastMember::TYPE_DIRECTOR
+            ]
         ];
 
-        $response = $this->assertStore($data, $data + ['deleted_at' => null]);
-        $response->assertJsonStructure([
-            'created_at', 'updated_at'
-        ]);
+        foreach ($datas as $data) {
+            $response = $this->assertStore($data, $data + ['deleted_at' => null]);
+            $response->assertJsonStructure([
+                'created_at', 'updated_at'
+            ]);
+        }
     }
 
     public function testUpdate()
