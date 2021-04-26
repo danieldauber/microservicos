@@ -11,16 +11,18 @@ use App\Models\Traits\Uuid;
 class CategoryTest extends TestCase
 {
 
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function testModel()
+    private $category;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->category = new Category();
+    }
+
+    public function testFillableAttribute()
     {
         $fillable = ['name', 'description', 'is_active'];
-        $category = new Category();
-        $this->assertEquals($fillable, $category->getFillable());
+        $this->assertEquals($fillable, $this->category->getFillable());
     }
 
     public function testIfUseTraits()
@@ -29,17 +31,28 @@ class CategoryTest extends TestCase
             SoftDeletes::class, Uuid::class,
         ];
 
-
         $categoryTraits = array_keys(class_uses(Category::class));
         $this->assertEqualsCanonicalizing($traits, $categoryTraits);
+    }
+
+    public function testDatesAttribute()
+    {
+        $dates = ['deleted_at', 'created_at', 'updated_at'];
+        foreach ($dates as $date) {
+            $this->assertContains($date, $this->category->getDates());
+        };
+        $this->assertCount(count($dates), $this->category->getDates());
     }
 
     public function testCasts()
     {
         $casts = ['id' => 'string', 'is_active' => 'boolean'];
 
-        $category = new Category();
+        $this->assertEquals($casts, $this->category->getCasts());
+    }
 
-        $this->assertEquals($casts, $category->getCasts());
+    public function testIncrementing()
+    {
+        $this->assertFalse($this->category->incrementing);
     }
 }

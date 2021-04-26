@@ -9,16 +9,28 @@ use App\Models\Traits\Uuid;
 
 class GenreUnitTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function testModel()
+
+    private $genre;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->genre = new Genre();
+    }
+
+    public function testFillableAttribute()
     {
         $fillable = ['name', 'is_active'];
-        $castMember = new Genre();
-        $this->assertEquals($fillable, $castMember->getFillable());
+        $this->assertEquals($fillable, $this->genre->getFillable());
+    }
+
+    public function testDatesAttribute()
+    {
+        $dates = ['deleted_at', 'created_at', 'updated_at'];
+        foreach ($dates as $date) {
+            $this->assertContains($date, $this->genre->getDates());
+        };
+        $this->assertCount(count($dates), $this->genre->getDates());
     }
 
     public function testIfUseTraits()
@@ -34,9 +46,11 @@ class GenreUnitTest extends TestCase
     public function testCasts()
     {
         $casts = ['id' => 'string', 'is_active' => 'boolean'];
+        $this->assertEquals($casts, $this->genre->getCasts());
+    }
 
-        $castMember = new Genre();
-
-        $this->assertEquals($casts, $castMember->getCasts());
+    public function testIncrementing()
+    {
+        $this->assertFalse($this->genre->incrementing);
     }
 }

@@ -9,16 +9,19 @@ use App\Models\Traits\Uuid;
 
 class CastMemberUnitTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     *
-     * @return void
-     */
-    public function testModel()
+
+    private $castMember;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->castMember = new CastMember();
+    }
+
+    public function testFillableAttribute()
     {
         $fillable = ['name', 'type'];
-        $castMember = new CastMember();
-        $this->assertEquals($fillable, $castMember->getFillable());
+        $this->assertEquals($fillable, $this->castMember->getFillable());
     }
 
     public function testIfUseTraits()
@@ -31,6 +34,15 @@ class CastMemberUnitTest extends TestCase
         $this->assertEqualsCanonicalizing($traits, $classTraits);
     }
 
+    public function testDatesAttribute()
+    {
+        $dates = ['deleted_at', 'created_at', 'updated_at'];
+        foreach ($dates as $date) {
+            $this->assertContains($date, $this->castMember->getDates());
+        };
+        $this->assertCount(count($dates), $this->castMember->getDates());
+    }
+
     public function testCasts()
     {
         $casts = ['id' => 'string', 'type' => 'integer'];
@@ -38,5 +50,10 @@ class CastMemberUnitTest extends TestCase
         $castMember = new CastMember();
 
         $this->assertEquals($casts, $castMember->getCasts());
+    }
+
+    public function testIncrementing()
+    {
+        $this->assertFalse($this->castMember->incrementing);
     }
 }
