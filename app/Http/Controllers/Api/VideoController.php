@@ -44,10 +44,9 @@ class VideoController extends BasicCrudController
     {
         $obj = $this->findOrFail($id);
         $validate = $this->validate($request, $this->rulesUpdate());
-        $obj->update($validate);
         $self = $this;
         $obj = DB::transaction(function () use ($validate, $request, $self, $obj) {
-            $obj = $this->model()::create($validate);
+            $obj->update($validate);
             $self->handleRelations($obj, $request);
             return $obj;
         });
