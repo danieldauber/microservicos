@@ -94,7 +94,7 @@ class VideoControllerTest extends TestCase
         $category->delete();
 
         $data = [
-            'genres_id' => [$category->id]
+            'categories_id' => [$category->id]
         ];
 
         $this->assertInvalidationInStore($data, 'exists');
@@ -119,7 +119,7 @@ class VideoControllerTest extends TestCase
         $genre->delete();
 
         $data = [
-            'categories_id' => [$genre->id]
+            'genres_id' => [$genre->id]
         ];
 
         $this->assertInvalidationInStore($data, 'exists');
