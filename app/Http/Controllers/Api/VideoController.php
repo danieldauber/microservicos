@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Tests\Unit\GenresHasCategoriesRule;
 
 class VideoController extends BasicCrudController
 {
@@ -21,13 +22,14 @@ class VideoController extends BasicCrudController
             'rating' => 'required|in:' . implode(',', Video::RATING_LIST),
             'duration' => 'required|integer',
             'categories_id' => 'required|array|exists:categories,id,deleted_at,NULL',
-            'genres_id' => 'required|array|exists:genres,id,deleted_at,NULL'
+            'genres_id' => ['required', 'array', 'exists:genres,id,deleted_at,NULL']
         ];
     }
 
     public function store(Request $request)
     {
         $validate = $this->validate($request, $this->rulesStore());
+        $this->addRuleIfGenreGasCategories($request);
 
         $self = $this;
         $obj = DB::transaction(function () use ($validate, $request, $self) {
@@ -43,6 +45,7 @@ class VideoController extends BasicCrudController
     public function update(Request $request, $id)
     {
         $obj = $this->findOrFail($id);
+        $this->addRuleIfGenreGasCategories($request);
         $validate = $this->validate($request, $this->rulesUpdate());
         $self = $this;
         $obj = DB::transaction(function () use ($validate, $request, $self, $obj) {
@@ -54,6 +57,15 @@ class VideoController extends BasicCrudController
         $obj->refresh();
 
         return $obj;
+    }
+
+    protected function addRuleIfGenreGasCategories(Request $request)
+    {
+        $categoriesId = $request->get('categories_id');
+        $categoriesId = is_array($categoriesId) ? $categoriesId : [];
+        $this->rules['genres_id'][] = new GenresHasCategoriesRule(
+            $categoriesId
+        );
     }
 
     protected function handleRelations($video, Request $request)
