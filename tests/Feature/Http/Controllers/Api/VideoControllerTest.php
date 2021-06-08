@@ -261,6 +261,7 @@ class VideoControllerTest extends TestCase
 
         $category = factory(Category::class)->create();
         $genre = factory(Genre::class)->create();
+        $genre->categories()->sync($category->id);
         $datas = [
             [
                 'send_data' => $this->sendData + [
@@ -336,6 +337,10 @@ class VideoControllerTest extends TestCase
             ->andThrow(new TestException());
 
         $request = Mockery::mock(Request::class);
+
+        $request->shouldReceive('get')
+            ->withAnyArgs()
+            ->andReturnNull();
 
         try {
             $controller->store($request);

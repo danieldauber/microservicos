@@ -15,8 +15,6 @@ trait TestValidations
         $ruleParams = []
     ) {
         $response = $this->json('POST', $this->routeStore(), $data);
-
-        // dd($response->content());
         $fields = array_keys($data);
         $this->assertInvalidationFields($response, $fields, $rule, $ruleParams);
     }
@@ -27,8 +25,6 @@ trait TestValidations
         $ruleParams = []
     ) {
         $response = $this->json('PUT', $this->routeUpdate(), $data);
-
-        dd($response->content());
         $fields = array_keys($data);
         $this->assertInvalidationFields($response, $fields, $rule, $ruleParams);
     }

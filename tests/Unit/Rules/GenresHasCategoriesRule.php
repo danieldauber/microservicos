@@ -88,6 +88,19 @@ class GenresHasCategoriesRule extends TestCase
             ));
 
         $this->assertFalse($rule->passes('', [1]));
+
+        $rule = $this->createRuleMock([1, 2]);
+
+        $rule->shouldReceive('getRows')
+            ->withAnyArgs()
+            ->andReturn(collect(
+                ['category_id' => 1],
+                ['category_id' => 2],
+                ['category_id' => 1],
+                ['category_id' => 2],
+            ));
+
+        $this->assertFalse($rule->passes('', [1]));
     }
 
 
