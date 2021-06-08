@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\DB;
 
 class GenreHasCategoriesRule implements Rule
@@ -53,9 +54,9 @@ class GenreHasCategoriesRule implements Rule
         return true;
     }
 
-    protected function getRows($genreId): Collection
+    protected function getRows($genreId): SupportCollection
     {
-        return DB::table('category_name')
+        return DB::table('category_genre')
             ->where('genre_id', $genreId)
             ->whereIn('category_id', $this->categoriesId)
             ->get();
