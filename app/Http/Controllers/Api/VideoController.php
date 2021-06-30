@@ -23,41 +23,36 @@ class VideoController extends BasicCrudController
             'rating' => 'required|in:' . implode(',', Video::RATING_LIST),
             'duration' => 'required|integer',
             'categories_id' => 'required|array|exists:categories,id,deleted_at,NULL',
-            'genres_id' => ['required', 'array', 'exists:genres,id,deleted_at,NULL']
+            'genres_id' => [
+                'required',
+                'array',
+                'exists:genres,id,deleted_at,NULL',
+            ],
+            'thumb_file' => 'image|max:' . Video::THUMB_FILE_MAX_SIZE, //5MB
+            'banner_file' => 'image|max:' . Video::BANNER_FILE_MAX_SIZE, //10MB
+            'trailer_file' => 'mimetypes:video/mp4|max:' . Video::TRAILER_FILE_MAX_SIZE, //1GB
+            'video_file' => 'mimetypes:video/mp4|max:' . Video::VIDEO_FILE_MAX_SIZE, //50GB
         ];
     }
 
     public function store(Request $request)
     {
-        $validate = $this->validate($request, $this->rulesStore());
         $this->addRuleIfGenreHasCategories($request);
-
-        $self = $this;
-        $obj = DB::transaction(function () use ($validate, $request, $self) {
-            $obj = $this->model()::create($validate);
-            $self->handleRelations($obj, $request);
-            return $obj;
-        });
-
+        $validatedData = $this->validate($request, $this->rulesStore());
+        $obj = $this->model()::create($validatedData);
         $obj->refresh();
-        return $obj;
+        $resource = $this->resource();
+        return new $resource($obj);
     }
 
     public function update(Request $request, $id)
     {
         $obj = $this->findOrFail($id);
         $this->addRuleIfGenreHasCategories($request);
-        $validate = $this->validate($request, $this->rulesUpdate());
-        $self = $this;
-        $obj = DB::transaction(function () use ($validate, $request, $self, $obj) {
-            $obj->update($validate);
-            $self->handleRelations($obj, $request);
-            return $obj;
-        });
-
-        $obj->refresh();
-
-        return $obj;
+        $validatedData = $this->validate($request, $this->rulesUpdate());
+        $obj->update($validatedData);
+        $resource = $this->resource();
+        return new $resource($obj);
     }
 
     protected function addRuleIfGenreHasCategories(Request $request)
@@ -67,12 +62,6 @@ class VideoController extends BasicCrudController
         $this->rules['genres_id'][] = new GenreHasCategoriesRule(
             $categoriesId
         );
-    }
-
-    protected function handleRelations($video, Request $request)
-    {
-        $video->categories()->sync($request->get('categories_id'));
-        $video->genres()->sync($request->get('genres_id'));
     }
 
     protected function model()
