@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Rules;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
-class GenresHasCategoriesRuleTest extends TestCase
+class GenreHasCategoriesRuleTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -36,7 +37,7 @@ class GenresHasCategoriesRuleTest extends TestCase
 
     public function testPassesIsValid()
     {
-        $rule = new GenresHasCategoriesRule(
+        $rule = new GenreHasCategoriesRule(
             [
                 $this->categories[2]->id,
             ]
@@ -46,7 +47,7 @@ class GenresHasCategoriesRuleTest extends TestCase
         ]);
         $this->assertTrue($isValid);
 
-        $rule = new GenresHasCategoriesRule(
+        $rule = new GenreHasCategoriesRule(
             [
                 $this->categories[0]->id,
                 $this->categories[2]->id,
@@ -58,7 +59,7 @@ class GenresHasCategoriesRuleTest extends TestCase
         ]);
         $this->assertTrue($isValid);
 
-        $rule = new GenresHasCategoriesRule(
+        $rule = new GenreHasCategoriesRule(
             [
                 $this->categories[0]->id,
                 $this->categories[1]->id,
@@ -71,7 +72,7 @@ class GenresHasCategoriesRuleTest extends TestCase
         ]);
         $this->assertTrue($isValid);
 
-        $rule = new GenresHasCategoriesRule(
+        $rule = new GenreHasCategoriesRule(
             [
                 $this->categories[0]->id,
                 $this->categories[1]->id,
@@ -85,7 +86,7 @@ class GenresHasCategoriesRuleTest extends TestCase
 
     public function testPassesIsNotValid()
     {
-        $rule = new GenresHasCategoriesRule(
+        $rule = new GenreHasCategoriesRule(
             [
                 $this->categories[0]->id,
             ]
@@ -96,7 +97,7 @@ class GenresHasCategoriesRuleTest extends TestCase
         ]);
         $this->assertFalse($isValid);
 
-        $rule = new GenresHasCategoriesRule(
+        $rule = new GenreHasCategoriesRule(
             [
                 $this->categories[3]->id,
             ]

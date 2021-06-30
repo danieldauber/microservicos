@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Rules;
@@ -6,15 +7,15 @@ namespace App\Rules;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
-class GenresHasCategoriesRuleUnitTest extends TestCase
+class GenreHasCategoriesRuleUnitTest extends TestCase
 {
 
     public function testCategoriesIdField()
     {
-        $rule = new GenresHasCategoriesRule(
+        $rule = new GenreHasCategoriesRule(
             [1, 1, 2, 2]
         );
-        $reflectionClass = new \ReflectionClass(GenresHasCategoriesRule::class);
+        $reflectionClass = new \ReflectionClass(GenreHasCategoriesRule::class);
         $reflectionProperty = $reflectionClass->getProperty('categoriesId');
         $reflectionProperty->setAccessible(true);
 
@@ -33,7 +34,7 @@ class GenresHasCategoriesRuleUnitTest extends TestCase
 
         $rule->passes('', [1, 1, 2, 2]);
 
-        $reflectionClass = new \ReflectionClass(GenresHasCategoriesRule::class);
+        $reflectionClass = new \ReflectionClass(GenreHasCategoriesRule::class);
         $reflectionProperty = $reflectionClass->getProperty('genresId');
         $reflectionProperty->setAccessible(true);
 
@@ -100,7 +101,7 @@ class GenresHasCategoriesRuleUnitTest extends TestCase
 
     protected function createRuleMock(array $categoriesId): MockInterface
     {
-        return \Mockery::mock(GenresHasCategoriesRule::class, [$categoriesId])
+        return \Mockery::mock(GenreHasCategoriesRule::class, [$categoriesId])
             ->makePartial()
             ->shouldAllowMockingProtectedMethods();
     }
