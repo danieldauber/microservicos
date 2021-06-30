@@ -1,8 +1,9 @@
 <?php
 
+
 namespace Tests\Traits;
 
-use App\Models\Traits\UploadFiles;
+
 use Illuminate\Http\UploadedFile;
 
 trait TestUploads

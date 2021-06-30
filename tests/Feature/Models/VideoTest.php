@@ -1,22 +1,33 @@
 <?php
 
-namespace Tests\Feature\Models\Video;
+namespace Tests\Feature\Models;
 
 use App\Models\Category;
 use App\Models\Genre;
 use App\Models\Video;
 use Illuminate\Database\QueryException;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Ramsey\Uuid\Uuid;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class VideoCrudTest extends BaseVideoTestCase
+class VideoTest extends TestCase
 {
-    private $fileFieldsData = [];
+    use DatabaseMigrations;
+
+    private $data;
 
     protected function setUp(): void
     {
         parent::setUp();
-        foreach (Video::$fileFields as $field) {
-            $this->fileFieldsData[$field] = "$field.test";
-        }
+        $this->data = [
+            'title' => 'title',
+            'description' => 'description',
+            'year_launched' => 2010,
+            'rating' => Video::RATING_LIST[0],
+            'duration' => 90,
+        ];
     }
 
     public function testList()
@@ -25,6 +36,7 @@ class VideoCrudTest extends BaseVideoTestCase
         $videos = Video::all();
         $this->assertCount(1, $videos);
         $videoKeys = array_keys($videos->first()->getAttributes());
+
         $this->assertEqualsCanonicalizing(
             [
                 'id',
@@ -34,13 +46,11 @@ class VideoCrudTest extends BaseVideoTestCase
                 'opened',
                 'rating',
                 'duration',
-                'video_file',
-                'thumb_file',
-                'banner_file',
-                'trailer_file',
                 'created_at',
                 'updated_at',
-                'deleted_at'
+                'deleted_at',
+                'video_file',
+
             ],
             $videoKeys
         );
@@ -48,16 +58,12 @@ class VideoCrudTest extends BaseVideoTestCase
 
     public function testCreateWithBasicFields()
     {
-
-        $video = Video::create($this->data + $this->fileFieldsData);
+        $video = Video::create($this->data);
         $video->refresh();
 
         $this->assertEquals(36, strlen($video->id));
         $this->assertFalse($video->opened);
-        $this->assertDatabaseHas(
-            'videos',
-            $this->data + $this->fileFieldsData + ['opened' => false]
-        );
+        $this->assertDatabaseHas('videos', $this->data + ['opened' => false]);
 
         $video = Video::create($this->data + ['opened' => true]);
         $this->assertTrue($video->opened);
@@ -83,7 +89,12 @@ class VideoCrudTest extends BaseVideoTestCase
     {
         $hasError = false;
         try {
-            Video::create($this->data + [
+            Video::create([
+                'title' => 'title',
+                'description' => 'description',
+                'year_launched' => 2010,
+                'rating' => Video::RATING_LIST[0],
+                'duration' => 90,
                 'categories_id' => [0, 1, 2]
             ]);
         } catch (QueryException $exception) {
@@ -99,17 +110,14 @@ class VideoCrudTest extends BaseVideoTestCase
         $video = factory(Video::class)->create(
             ['opened' => false]
         );
-        $video->update($this->data + $this->fileFieldsData);
+        $video->update($this->data);
         $this->assertFalse($video->opened);
-        $this->assertDatabaseHas(
-            'videos',
-            $this->data + $this->fileFieldsData + ['opened' => false]
-        );
+        $this->assertDatabaseHas('videos', $this->data + ['opened' => false]);
 
         $video = factory(Video::class)->create(
             ['opened' => false]
         );
-        $video->update($this->data + $this->fileFieldsData + ['opened' => true]);
+        $video->update($this->data + ['opened' => true]);
         $this->assertTrue($video->opened);
         $this->assertDatabaseHas('videos', $this->data + ['opened' => true]);
     }
@@ -134,10 +142,13 @@ class VideoCrudTest extends BaseVideoTestCase
     {
         $video = factory(Video::class)->create();
         $oldTitle = $video->title;
-        $hasError = false;
-
         try {
-            $video->update($this->data + [
+            $video->update([
+                'title' => 'title',
+                'description' => 'description',
+                'year_launched' => 2010,
+                'rating' => Video::RATING_LIST[0],
+                'duration' => 90,
                 'categories_id' => [0, 1, 2]
             ]);
         } catch (QueryException $exception) {
@@ -173,11 +184,13 @@ class VideoCrudTest extends BaseVideoTestCase
         $this->assertCount(0, $video->categories);
         $this->assertCount(0, $video->genres);
 
-        $category = factory(Category::class)->create();
+        $category = factory(Category::class)->create()->first();
+
         Video::handleRelations($video, [
             'categories_id' => [$category->id]
         ]);
         $video->refresh();
+
         $this->assertCount(1, $video->categories);
 
         $genre = factory(Genre::class)->create();
