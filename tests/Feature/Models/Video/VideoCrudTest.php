@@ -35,10 +35,13 @@ class VideoCrudTest extends BaseVideoTestCase
                 'opened',
                 'rating',
                 'duration',
-                'created_at',
-                'updated_at',
-                'deleted_at',
-                'video_file',
+                "thumb_file",
+                "banner_file",
+                "trailer_file",
+                "video_file",
+                "deleted_at",
+                "created_at",
+                "updated_at",
 
             ],
             $videoKeys
@@ -173,8 +176,7 @@ class VideoCrudTest extends BaseVideoTestCase
         $this->assertCount(0, $video->categories);
         $this->assertCount(0, $video->genres);
 
-        $category = factory(Category::class)->create()->first();
-
+        $category = factory(Category::class)->create();
         Video::handleRelations($video, [
             'categories_id' => [$category->id]
         ]);

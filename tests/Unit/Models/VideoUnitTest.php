@@ -6,6 +6,7 @@ use App\Models\Video;
 use App\Models\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Tests\TestCase;
+use App\Models\Traits\UploadFiles;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -28,7 +29,8 @@ class VideoUnitTest extends TestCase
     {
         $traits = [
             SoftDeletes::class,
-            Uuid::class
+            Uuid::class,
+            UploadFiles::class
         ];
         $videoTraits = array_keys(class_uses(Video::class));
         $this->assertEquals($traits, $videoTraits);
@@ -43,6 +45,10 @@ class VideoUnitTest extends TestCase
             'opened',
             'rating',
             'duration',
+            'video_file',
+            'thumb_file',
+            'banner_file',
+            'trailer_file',
         ];
         $this->assertEquals($fillable, $this->video->getFillable());
     }
@@ -71,6 +77,4 @@ class VideoUnitTest extends TestCase
     {
         $this->assertFalse($this->video->incrementing);
     }
-
-
 }
