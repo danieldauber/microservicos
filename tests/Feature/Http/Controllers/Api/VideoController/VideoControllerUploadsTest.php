@@ -17,13 +17,45 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase
     use TestValidations, TestUploads;
 
 
+    public function testInvalidationThumbField()
+    {
+        $this->assertInvalidationFile(
+            'banner_file',
+            'jpg',
+            Video::BANNER_FILE_MAX_SIZE,
+            'image'
+        );
+    }
+
+    public function testInvalidationBannerField()
+    {
+        $this->assertInvalidationFile(
+            'banner_file',
+            'jpg',
+            Video::BANNER_FILE_MAX_SIZE,
+            'image'
+        );
+    }
+
+    public function testInvalidationTrailerField()
+    {
+        $this->assertInvalidationFile(
+            'trailer_file',
+            'mp4',
+            Video::TRAILER_FILE_MAX_SIZE,
+            'mimetypes',
+            ['values' => 'video/mp4']
+        );
+    }
+
     public function testInvalidationVideoField()
     {
         $this->assertInvalidationFile(
             'video_file',
             'mp4',
-            12,
-            'mimetypes', ['values' => 'video/mp4']
+            Video::VIDEO_FILE_MAX_SIZE,
+            'mimetypes',
+            ['values' => 'video/mp4']
         );
     }
 
@@ -40,11 +72,11 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase
             'POST',
             $this->routeStore(),
             $this->sendData +
-            [
-                'categories_id' => [$category->id],
-                'genres_id' => [$genre->id],
-            ] +
-            $files
+                [
+                    'categories_id' => [$category->id],
+                    'genres_id' => [$genre->id],
+                ] +
+                $files
         );
 
         $response->assertStatus(201);
@@ -67,11 +99,11 @@ class VideoControllerUploadsTest extends BaseVideoControllerTestCase
             'PUT',
             $this->routeUpdate(),
             $this->sendData +
-            [
-                'categories_id' => [$category->id],
-                'genres_id' => [$genre->id],
-            ] +
-            $files
+                [
+                    'categories_id' => [$category->id],
+                    'genres_id' => [$genre->id],
+                ] +
+                $files
         );
         $response->assertStatus(200);
 
