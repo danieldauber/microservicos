@@ -9,6 +9,12 @@ use Illuminate\Testing\TestResponse;
 trait TestValidations
 {
 
+    protected abstract function model();
+
+    protected abstract function routeStore();
+
+    protected abstract function routeUpdate();
+
     protected function assertInvalidationInStore(
         array $data,
         string $rule,
@@ -35,13 +41,11 @@ trait TestValidations
         string $rule,
         array $ruleParams = []
     ) {
-
         $response
             ->assertStatus(422)
             ->assertJsonValidationErrors($fields);
 
         foreach ($fields as $field) {
-
             $fieldName = str_replace('_', ' ', $field);
             $response->assertJsonFragment([
                 \Lang::get("validation.{$rule}", ['attribute' => $fieldName] + $ruleParams)
