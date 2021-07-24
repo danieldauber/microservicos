@@ -4,6 +4,7 @@ namespace Tests\Stubs\Controllers;
 
 use App\Http\Controllers\Api\BasicCrudController;
 use tests\Stubs\Models\CategoryStub;
+use Tests\Stubs\Resources\CategoryStubResource;
 
 class CategoryControllerStub extends BasicCrudController
 {
