@@ -17,6 +17,10 @@ backend/vendor
 backend/storage
 storage/*
 
+frontend/node_modules
+
 _ide_helper.php
 _ide_helper_models.php
 .phpstorm.meta.php
+
+.npm-cache/
