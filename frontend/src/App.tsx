@@ -1,26 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Box } from "@material-ui/core";
+import React from "react";
+import { Navbar } from "./components/Navbar";
+import { Page } from "./components/Page";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          asdasdas
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <Box paddingTop={"70px"}>
+        <Page title={"Paginas"} />
+      </Box>
+    </>
   );
-}
+};
 
 export default App;
