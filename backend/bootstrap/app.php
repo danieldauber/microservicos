@@ -52,4 +52,6 @@ $app->singleton(
 |
 */
 
+// $app->register(\Nuwave\Lighthouse\LighthouseServiceProvider::class);
+
 return $app;
