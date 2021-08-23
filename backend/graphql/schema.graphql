@@ -9,6 +9,7 @@ type Query {
     users: [User!]! @paginate(defaultCount: 10)
     user(id: ID @eq): User @find
     videos: [Video!]! @all
+    genre: [Genre!]! @all
 }
 
 type User {
@@ -25,6 +26,15 @@ type Video {
     description: String!
     year_launched: String!
     opened: Boolean!
+    duration: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Genre {
+    id: ID!
+    name: String!
+    is_active: Boolean!
     duration: String!
     created_at: DateTime!
     updated_at: DateTime!
