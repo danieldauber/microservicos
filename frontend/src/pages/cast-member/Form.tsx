@@ -12,7 +12,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { ButtonProps } from "@material-ui/core/Button";
-import { useForm } from "react-hook-form";
+import useForm from "react-hook-form";
 import castMemberHttp from "../../util/http/cast-member-http";
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -31,7 +31,8 @@ export const Form = () => {
     variant: "outlined",
   };
 
-  const { register, handleSubmit, getValues, setValue } = useForm();
+  const { register, handleSubmit, getValues, setValue, errors, reset, watch } =
+    useForm({});
 
   useEffect(() => {
     // register({ name: "type" });
@@ -46,12 +47,7 @@ export const Form = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <TextField
-        label="Nome"
-        fullWidth
-        variant={"outlined"}
-        {...register("name")}
-      />
+      <TextField label="Nome" fullWidth variant={"outlined"} name="name" />
       <FormControl margin={"normal"}>
         <FormLabel component="legend">Tipo</FormLabel>
         <RadioGroup
