@@ -15,8 +15,8 @@ yarn-error.log
 
 backend/vendor
 backend/.env
-backend/storage/*
-storage/*
+# backend/storage
+# storage/*
 
 frontend/node_modules
 

@@ -14,8 +14,10 @@ yarn-error.log
 .docker/dbdata
 
 backend/vendor
-backend/storage
-storage/*
+# backend/storage
+storage/app
+storage/faker
+storage/logs
 
 _ide_helper.php
 _ide_helper_models.php
