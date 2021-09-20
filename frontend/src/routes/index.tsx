@@ -58,6 +58,13 @@ const routes: MyRouteProps[] = [
     exact: true,
   },
   {
+    name: "cast_members.edit",
+    label: "Editar Membros de Elenco",
+    path: "/cast-members/:id/edit",
+    component: CastMemberForm,
+    exact: true,
+  },
+  {
     name: "genres.list",
     label: "Listar gêneros",
     path: "/genres",

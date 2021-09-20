@@ -90,7 +90,7 @@ export const Form = () => {
     }
 
     getCategory();
-  }, [id]);
+  }, [id, reset, snackbar]);
 
   async function onSubmit(formData: Inputs, event: any) {
     setLoading(true);
