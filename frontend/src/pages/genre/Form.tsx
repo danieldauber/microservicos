@@ -8,7 +8,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { ButtonProps } from "@material-ui/core/Button";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import categoryHttp from "../../util/http/category-http";
 import genreHttp from "../../util/http/genre-http";

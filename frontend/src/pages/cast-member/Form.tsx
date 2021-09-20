@@ -12,7 +12,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { ButtonProps } from "@material-ui/core/Button";
-import useForm from "react-hook-form";
+import { useForm } from "react-hook-form";
 import castMemberHttp from "../../util/http/cast-member-http";
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -31,8 +31,15 @@ export const Form = () => {
     variant: "outlined",
   };
 
-  const { register, handleSubmit, getValues, setValue, errors, reset, watch } =
-    useForm({});
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors },
+    reset,
+    watch,
+  } = useForm({});
 
   useEffect(() => {
     // register({ name: "type" });
